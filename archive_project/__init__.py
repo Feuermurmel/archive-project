@@ -1,4 +1,8 @@
 import argparse
+import datetime
+import os
+import pathlib
+import subprocess
 import sys
 
 
@@ -14,11 +18,28 @@ class UserError(Exception):
 def parse_args():
     parser = argparse.ArgumentParser()
 
+    parser.add_argument('source_paths', nargs='+', type=pathlib.Path)
+
     return parser.parse_args()
 
 
-def main():
-    pass
+def latest_mtime(root: pathlib.Path):
+    def iter_ctimes():
+        for dirpath, dirnames, filenames in os.walk(root):
+            for i in filenames:
+                yield (pathlib.Path(dirpath) / i).stat().st_mtime
+
+    return max(iter_ctimes())
+
+
+def main(source_paths):
+    for i in source_paths:
+        time = datetime.datetime.fromtimestamp(latest_mtime(i))
+        dest_dir = pathlib.Path(time.strftime('~/Documents/Archive/%G/%V')).expanduser()
+
+        dest_dir.mkdir(parents=True, exist_ok=True)
+
+        subprocess.check_call(['archive', '-d', str(dest_dir), i])
 
 
 def entry_point():
