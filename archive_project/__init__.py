@@ -26,6 +26,10 @@ def parse_args():
 def latest_mtime(root: pathlib.Path):
     def iter_ctimes():
         for dirpath, dirnames, filenames in os.walk(root):
+            for list in dirnames, filenames:
+                # Ignore hidden stuff to find the "most recent modification".
+                list[:] = (i for i in list if not i.startswith('.'))
+
             for i in filenames:
                 yield (pathlib.Path(dirpath) / i).lstat().st_mtime
 
