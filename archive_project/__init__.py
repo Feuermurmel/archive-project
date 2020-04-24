@@ -27,7 +27,7 @@ def latest_mtime(root: pathlib.Path):
     def iter_ctimes():
         for dirpath, dirnames, filenames in os.walk(root):
             for i in filenames:
-                yield (pathlib.Path(dirpath) / i).stat().st_mtime
+                yield (pathlib.Path(dirpath) / i).lstat().st_mtime
 
     return max(iter_ctimes())
 
