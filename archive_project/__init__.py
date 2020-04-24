@@ -35,7 +35,7 @@ def latest_mtime(root: pathlib.Path):
 def main(source_paths):
     for i in source_paths:
         time = datetime.datetime.fromtimestamp(latest_mtime(i))
-        dest_dir = pathlib.Path(time.strftime('~/Documents/Archive/%G/%V')).expanduser()
+        dest_dir = pathlib.Path(time.strftime('~/Documents/Archive/%G/W%V')).expanduser()
 
         dest_dir.mkdir(parents=True, exist_ok=True)
 
